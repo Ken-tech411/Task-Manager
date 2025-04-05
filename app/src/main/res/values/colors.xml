@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    
+    <!-- Primary brand colors -->
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorBackground">#F5F7FA</color>
+    
+    <!-- Status colors -->
+    <color name="colorSuccess">#4CAF50</color>
+    <color name="colorWarning">#FFC107</color>
+    <color name="colorError">#F44336</color>
+    <color name="colorInfo">#2196F3</color>
+    
+    <!-- Priority colors -->
+    <color name="red">#F44336</color>
+    <color name="orange">#FF9800</color>
+    <color name="green">#4CAF50</color>
+    <color name="blue">#2196F3</color>
+    <color name="purple">#9C27B0</color>
+    <color name="cyan">#00BCD4</color>
+    <color name="gray">#757575</color>
+    
+    <!-- Background tints -->
+    <color name="redLight">#FFEBEE</color>
+    <color name="orangeLight">#FFF3E0</color>
+    <color name="greenLight">#E8F5E9</color>
+    <color name="blueLight">#E3F2FD</color>
+    <color name="purpleLight">#F3E5F5</color>
+    <color name="cyanLight">#E0F7FA</color>
+    <color name="grayLight">#F5F5F5</color>
+    
+    <!-- Text colors -->
+    <color name="textPrimary">#212121</color>
+    <color name="textSecondary">#757575</color>
+    <color name="textDisabled">#9E9E9E</color>
+    <color name="divider">#EEEEEE</color>
+</resources>

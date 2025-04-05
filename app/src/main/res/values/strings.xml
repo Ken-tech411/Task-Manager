@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TaskMaster</string>
+
+    <!-- Navigation strings -->
+    <string name="add_task">Add Task</string>
+    <string name="task_list">Task List</string>
+    <string name="task_details">Task Details</string>
+    <string name="task_statistics">Task Statistics</string>
+    <string name="find_tasks">Find Tasks</string>
+
+    <!-- Form field strings -->
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="priority">Priority</string>
+    <string name="due_date">Due Date</string>
+    <string name="category">Category</string>
+    <string name="status">Status</string>
+
+    <!-- Action strings -->
+    <string name="pending">Pending</string>
+    <string name="completed">Completed</string>
+    <string name="delete">Delete</string>
+    <string name="update">Update</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Empty state messages -->
+    <string name="no_tasks_yet">No Tasks Yet</string>
+    <string name="no_tasks_subtitle">Tap the + button to create your first task</string>
+    <string name="empty_task_list">Your task list is empty</string>
+
+    <!-- Priority levels -->
+    <string name="priority_high">High</string>
+    <string name="priority_medium">Medium</string>
+    <string name="priority_low">Low</string>
+
+    <!-- Categories -->
+    <string name="category_work">Work</string>
+    <string name="category_personal">Personal</string>
+    <string name="category_shopping">Shopping</string>
+    <string name="category_other">Other</string>
+    <string name="category_study">Study</string>
+    <string name="category_health">Health</string>
+    <string name="category_finance">Finance</string>
+
+    <!-- Statistics strings -->
+    <string name="tasks_completed">Tasks Completed</string>
+    <string name="tasks_pending">Tasks Pending</string>
+    <string name="tasks_overdue">Tasks Overdue</string>
+    <string name="tasks_by_priority">Tasks by Priority</string>
+    <string name="tasks_by_category">Tasks by Category</string>
+    <string name="battery_usage">Battery Usage</string>
+    <string name="performance">Performance</string>
+    <string name="no_data_available">No data available</string>
+
+    <!-- Dialog messages -->
+    <string name="delete_confirmation">Are you sure you want to delete this task?</string>
+    <string name="task_added">Task added successfully</string>
+    <string name="task_updated">Task updated successfully</string>
+    <string name="task_deleted">Task deleted successfully</string>
+    <string name="required_field">This field is required</string>
+    <string name="pick_date">Select a date</string>
+
+    <!-- Accessibility -->
+    <string name="add_new_task">Add new task</string>
+    <string name="delete_task">Delete task</string>
+    <string name="edit_task">Edit task</string>
+    <string name="mark_complete">Mark as complete</string>
+    <string name="mark_incomplete">Mark as incomplete</string>
+    <string name="select_date">Select a date</string>
+
+    <!-- Performance testing -->
+    <string name="start_perf_test">Start Performance Test</string>
+    <string name="stop_perf_test">Stop Performance Test</string>
+    <string name="test_results">Test Results</string>
+    <string name="performance_test">Performance Test</string>
+
+    <!-- User Profile -->
+    <string name="user_profile">User Profile</string>
+    <string name="notification">Notification</string>
+    <string name="crucial">Crucial</string>
+    <string name="conference">Conference</string>
+    <string name="edit_user_name">Name</string>
+    <string name="edit_user_email">Email</string>
+    <string name="manage_profiles">Manage Profiles</string>
+    <string name="create_profile">Create Profile</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="profile_updated">Profile updated successfully</string>
+    <string name="fields_cannot_be_empty">Fields cannot be empty</string>
+    <string name="add_profile">Add Profile</string>
+    <string name="tap_to_create_profile">Tap to create a profile</string>
+    <string name="app_settings">App Settings</string>
+
+    <!-- Recurring task strings -->
+    <string name="task_recurrence">Recurrence</string>
+    <string name="recurrence_none">No recurrence</string>
+    <string name="recurrence_daily">Daily</string>
+    <string name="recurrence_weekly">Weekly</string>
+    <string name="recurrence_monthly">Monthly</string>
+
+    <!-- Task notes strings -->
+    <string name="task_notes">Notes</string>
+    <string name="task_notes_hint">Add any additional notes here...</string>
+
+    <!-- New strings for MainActivity and FinishedTasksFragment -->
+    <string name="progress_complete_format">%d%% complete</string>
+    <string name="completed_progress_format">Completed: %d%%</string>
+    <string name="in_progress">In Progress</string>
+    <string name="in_progress_progress_format">In Progress: %d%%</string>
+    <string name="filter_and_sort">Filter and Sort</string>
+    <string name="all_priorities">ALL Priorities</string>
+    <string name="all_categories">ALL Categories</string>
+    <string name="sort_by">Sort By</string>
+    <string name="all">ALL</string>
+    <string name="to_do">To Do</string>
+    <string name="settings">Settings</string>
+
+    <!-- Arrays for spinners -->
+    <string-array name="priority_options">
+        <item>@string/all_priorities</item>
+        <item>@string/priority_high</item>
+        <item>@string/priority_medium</item>
+        <item>@string/priority_low</item>
+    </string-array>
+
+    <string-array name="category_options">
+        <item>@string/all_categories</item>
+        <item>@string/category_work</item>
+        <item>@string/category_personal</item>
+        <item>@string/category_shopping</item>
+        <item>@string/category_other</item>
+        <item>@string/category_study</item>
+        <item>@string/category_health</item>
+        <item>@string/category_finance</item>
+    </string-array>
+
+    <string-array name="sort_by_options">
+        <item>Due Date</item>
+        <item>Priority</item>
+        <item>Title</item>
+    </string-array>
+
+    <!-- Strings for toggle buttons -->
+    <string name="show_stats">Show Stats</string>
+    <string name="hide_stats">Hide Stats</string>
+    <string name="show_filters">Show Filters</string>
+    <string name="hide_filters">Hide Filters</string>
+
+    <!-- Strings for progress and stats -->
+    <string name="tasks_progress_format">%d of %d tasks completed</string>
+
+    <!-- Strings for task status tabs -->
+    <string name="tab_all">All</string>
+    <string name="tab_to_do">To Do</string>
+    <string name="tab_in_progress">In Progress</string>
+    <string name="tab_completed">Completed</string>
+    <string name="tab_finished">Finished</string>
+</resources>

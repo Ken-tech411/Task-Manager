@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_tasks"
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="@string/task_list" />
+    <item
+        android:id="@+id/nav_find"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="@string/find_tasks" />
+    <item
+        android:id="@+id/nav_todo"
+        android:icon="@drawable/ic_calendar"
+        android:title="@string/to_do" />
+    <item
+        android:id="@+id/nav_finished"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="@string/tab_finished" />
+</menu>

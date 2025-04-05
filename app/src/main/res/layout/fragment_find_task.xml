@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/colorBackground">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="24dp"
+            app:layout_scrollFlags="scroll|enterAlways">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Find Tasks"
+                style="@style/TextHeadline"
+                android:shadowColor="#20000000"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="3"
+                android:fontFamily="sans-serif-medium"/>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                style="@style/AppCard.Elevated"
+                app:cardCornerRadius="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="12dp"
+                        android:background="@color/blueLight">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:hint="Search tasks..."
+                            app:startIconDrawable="@android:drawable/ic_menu_search"
+                            app:startIconTint="@color/colorPrimary"
+                            app:boxStrokeWidth="0dp"
+                            app:hintEnabled="true"
+                            app:hintTextColor="@color/colorPrimary"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/findSearchEditText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="text"
+                                android:background="@android:color/transparent"
+                                android:padding="12dp"
+                                android:textSize="16sp" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/findSearchButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="Search"
+                            android:minWidth="80dp"
+                            style="@style/AppButton"
+                            app:icon="@android:drawable/ic_menu_search"
+                            app:iconGravity="textStart" />
+                    </LinearLayout>
+
+                    <!-- Priority filter section -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Priority"
+                        style="@style/TextSubtitle"
+                        android:textStyle="bold"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginBottom="4dp"/>
+                        
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scrollbars="none"
+                        android:paddingHorizontal="12dp">
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/priorityFilterChipGroup"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:singleLine="true"
+                            app:singleSelection="false">
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chipHigh"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="High Priority"
+                                app:chipBackgroundColor="@color/redLight"
+                                app:chipStrokeColor="@color/red"
+                                app:chipStrokeWidth="1dp"
+                                app:chipIconTint="@color/red"
+                                android:textColor="@color/red"
+                                app:closeIconTint="@color/red"
+                                android:checkable="true" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chipMedium"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Medium Priority"
+                                app:chipBackgroundColor="@color/orangeLight"
+                                app:chipStrokeColor="@color/orange"
+                                app:chipStrokeWidth="1dp"
+                                app:chipIconTint="@color/orange"
+                                android:textColor="@color/orange"
+                                app:closeIconTint="@color/orange"
+                                android:checkable="true" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chipLow"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Low Priority"
+                                app:chipBackgroundColor="@color/greenLight"
+                                app:chipStrokeColor="@color/green"
+                                app:chipStrokeWidth="1dp"
+                                app:chipIconTint="@color/green"
+                                android:textColor="@color/green"
+                                app:closeIconTint="@color/green"
+                                android:checkable="true" />
+                        </com.google.android.material.chip.ChipGroup>
+                    </HorizontalScrollView>
+
+                    <!-- Category filter section -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Category"
+                        style="@style/TextSubtitle"
+                        android:textStyle="bold"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginBottom="4dp"/>
+                        
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scrollbars="none"
+                        android:paddingHorizontal="12dp"
+                        android:paddingBottom="12dp">
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/categoryFilterChipGroup"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:singleLine="true"
+                            app:singleSelection="false">
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chipWork"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Work"
+                                app:chipBackgroundColor="@color/blueLight"
+                                app:chipStrokeColor="@color/blue"
+                                app:chipStrokeWidth="1dp"
+                                app:chipIconTint="@color/blue"
+                                android:textColor="@color/blue"
+                                app:closeIconTint="@color/blue"
+                                android:checkable="true" />
+                                
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chipPersonal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Personal"
+                                app:chipBackgroundColor="@color/purpleLight"
+                                app:chipStrokeColor="@color/purple"
+                                app:chipStrokeWidth="1dp"
+                                app:chipIconTint="@color/purple"
+                                android:textColor="@color/purple"
+                                app:closeIconTint="@color/purple"
+                                android:checkable="true" />
+                                
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chipShopping"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Shopping"
+                                app:chipBackgroundColor="@color/cyanLight"
+                                app:chipStrokeColor="@color/cyan"
+                                app:chipStrokeWidth="1dp"
+                                app:chipIconTint="@color/cyan"
+                                android:textColor="@color/cyan"
+                                app:closeIconTint="@color/cyan"
+                                android:checkable="true" />
+                                
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chipOther"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Other"
+                                app:chipBackgroundColor="@color/grayLight"
+                                app:chipStrokeColor="@color/gray"
+                                app:chipStrokeWidth="1dp"
+                                app:chipIconTint="@color/gray"
+                                android:textColor="@color/gray"
+                                app:closeIconTint="@color/gray"
+                                android:checkable="true" />
+                        </com.google.android.material.chip.ChipGroup>
+                    </HorizontalScrollView>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/resultsCountText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Results (0)"
+                style="@style/TextSubtitle"
+                android:textStyle="bold"
+                android:textColor="@color/textPrimary"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="4dp"/>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/searchRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:paddingVertical="8dp"
+                    android:overScrollMode="never"
+                    tools:listitem="@layout/item_task" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/searchEmptyView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="24dp"
+                        style="@style/AppCard.Elevated"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_marginHorizontal="32dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="24dp">
+
+                            <ImageView
+                                android:id="@+id/emptySearchIcon"
+                                android:layout_width="120dp"
+                                android:layout_height="120dp"
+                                android:src="@android:drawable/ic_menu_search"
+                                android:alpha="0.8"
+                                app:tint="@color/colorPrimary"
+                                android:contentDescription="No tasks found" />
+
+                            <TextView
+                                android:id="@+id/emptySearchText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="No tasks found"
+                                style="@style/TextTitle"
+                                android:textAlignment="center"
+                                android:layout_marginTop="16dp"
+                                android:layout_marginHorizontal="16dp" />
+
+                            <TextView
+                                android:id="@+id/emptySearchSubtext"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Try adjusting your search terms or filters"
+                                style="@style/TextBody"
+                                android:textColor="@color/textSecondary"
+                                android:textAlignment="center"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginHorizontal="16dp" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/clearSearchButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Clear Search"
+                                android:layout_marginTop="16dp"
+                                style="@style/AppButton.Outlined"
+                                app:cornerRadius="20dp" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </FrameLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
