@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -12,6 +11,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class FinishedTasksFragment : Fragment() {
 
@@ -20,6 +20,7 @@ class FinishedTasksFragment : Fragment() {
     private lateinit var taskAdapter: TaskAdapter
     private lateinit var taskViewModel: TaskViewModel
     private lateinit var toolbar: MaterialToolbar
+    private lateinit var bottomNavigation: BottomNavigationView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,13 +32,14 @@ class FinishedTasksFragment : Fragment() {
         recyclerView = view.findViewById(R.id.finishedRecyclerView)
         emptyView = view.findViewById(R.id.finishedEmptyView)
         toolbar = view.findViewById(R.id.finishedTasksToolbar)
+        bottomNavigation = view.findViewById(R.id.bottomNavigation)
 
         setupRecyclerView()
         setupToolbar()
+        setupBottomNavigation()
 
         taskViewModel = ViewModelProvider(requireActivity())[TaskViewModel::class.java]
 
-        // Observe only completed tasks with animation
         taskViewModel.allTasks.observe(viewLifecycleOwner) { tasks ->
             val completedTasks = tasks.filter { it.completed }
             taskAdapter.updateTasks(completedTasks)
@@ -60,16 +62,48 @@ class FinishedTasksFragment : Fragment() {
                 }
             }
 
-            // Update the toolbar title with count
             updateToolbarTitle(completedTasks.size)
         }
 
         return view
     }
 
+    private fun setupBottomNavigation() {
+        bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_tasks -> {
+                    // Return to MainActivity by clearing the back stack
+                    parentFragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    true
+                }
+                R.id.nav_find -> {
+                    navigateToFragment(FindTaskFragment())
+                    true
+                }
+                R.id.nav_todo -> {
+                    navigateToFragment(CalendarFragment())
+                    true
+                }
+                R.id.nav_finished -> {
+                    // Already in FinishedTasksFragment
+                    true
+                }
+                else -> false
+            }
+        }
+        // Highlight the current fragment
+        bottomNavigation.selectedItemId = R.id.nav_finished
+    }
+
+    private fun navigateToFragment(fragment: Fragment) {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
     private fun setupToolbar() {
-        // Navigation click listener removed
-        // Just update the toolbar title
+        // Toolbar setup remains minimal
     }
 
     private fun updateToolbarTitle(count: Int) {
@@ -81,15 +115,12 @@ class FinishedTasksFragment : Fragment() {
         val layoutManager = LinearLayoutManager(context)
         recyclerView.layoutManager = layoutManager
 
-        // Remove the divider decoration for a cleaner look
-
         val itemAnimator = DefaultItemAnimator()
         itemAnimator.supportsChangeAnimations = false
         recyclerView.itemAnimator = itemAnimator
 
         taskAdapter = TaskAdapter(
             listener = { task ->
-                // Open task detail fragment
                 val fragment = TaskDetailFragment.newInstance(task)
                 parentFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, fragment)
@@ -97,11 +128,9 @@ class FinishedTasksFragment : Fragment() {
                     .commit()
             },
             checkListener = { task, isChecked ->
-                // Update task completion status
                 val updatedTask = task.copy(completed = isChecked)
                 taskViewModel.updateTask(updatedTask)
 
-                // If task is unchecked, it should no longer appear in the finished tasks list
                 if (!isChecked) {
                     taskViewModel.allTasks.value?.let { tasks ->
                         val completedTasks = tasks.filter { it.completed }

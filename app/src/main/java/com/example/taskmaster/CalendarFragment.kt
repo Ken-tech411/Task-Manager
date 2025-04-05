@@ -9,16 +9,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.TextView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class TodoFragment : Fragment() {
+class CalendarFragment : Fragment() {
 
     private lateinit var taskViewModel: TaskViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var emptyView: View
+    private lateinit var bottomNavigation: BottomNavigationView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,6 +30,7 @@ class TodoFragment : Fragment() {
 
         recyclerView = view.findViewById(R.id.todoRecyclerView)
         emptyView = view.findViewById(R.id.todoEmptyView)
+        bottomNavigation = view.findViewById(R.id.bottomNavigation)
 
         return view
     }
@@ -39,6 +42,9 @@ class TodoFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         val adapter = DailyTasksAdapter()
         recyclerView.adapter = adapter
+
+        // Set up bottom navigation
+        setupBottomNavigation()
 
         // Observe tasks from the ViewModel
         taskViewModel = ViewModelProvider(requireActivity())[TaskViewModel::class.java]
@@ -57,6 +63,40 @@ class TodoFragment : Fragment() {
         }
     }
 
+    private fun setupBottomNavigation() {
+        bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_tasks -> {
+                    // Return to MainActivity by clearing the back stack
+                    parentFragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    true
+                }
+                R.id.nav_find -> {
+                    navigateToFragment(FindTaskFragment())
+                    true
+                }
+                R.id.nav_todo -> {
+                    // Already in CalendarFragment (To Do)
+                    true
+                }
+                R.id.nav_finished -> {
+                    navigateToFragment(FinishedTasksFragment())
+                    true
+                }
+                else -> false
+            }
+        }
+        // Highlight the current fragment
+        bottomNavigation.selectedItemId = R.id.nav_todo
+    }
+
+    private fun navigateToFragment(fragment: Fragment) {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
     private fun groupTasksByDate(tasks: List<Task>): List<DailyTasks> {
         // Group tasks by due date
         val groupedMap = HashMap<Calendar, MutableList<Task>>()
@@ -69,7 +109,7 @@ class TodoFragment : Fragment() {
 
         for (task in tasks) {
             // If task has a due date
-            if (task.dueDate != null && task.dueDate.isNotEmpty()) {
+            if (task.dueDate.isNotEmpty()) {
                 try {
                     // The dates are stored in "MMM dd, yyyy" format (e.g., "Mar 31, 2023")
                     val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.US)
@@ -117,7 +157,7 @@ class TodoFragment : Fragment() {
                         }
                     } catch (e2: Exception) {
                         // Both date formats failed, just log the error
-                        android.util.Log.e("TodoFragment", "Could not parse date: ${task.dueDate}", e2)
+                        android.util.Log.e("CalendarFragment", "Could not parse date: ${task.dueDate}", e2)
                     }
                 }
             }

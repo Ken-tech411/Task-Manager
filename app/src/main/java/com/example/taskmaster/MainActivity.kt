@@ -157,6 +157,26 @@ class MainActivity : AppCompatActivity(), EditProfileFragment.OnProfileUpdatedLi
                         .commit()
                     true
                 }
+                R.id.nav_todo -> {
+                    hideMainView()
+                    fragmentContainer.isVisible = true
+                    val fragment = CalendarFragment()
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commit()
+                    true
+                }
+                R.id.nav_finished -> {
+                    hideMainView()
+                    fragmentContainer.isVisible = true
+                    val fragment = FinishedTasksFragment()
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commit()
+                    true
+                }
                 else -> false
             }
         }

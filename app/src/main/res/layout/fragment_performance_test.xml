@@ -11,12 +11,13 @@
 
     <TextView
         android:id="@+id/testTitle"
+        style="@style/TextHeadline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/performance"
-        style="@style/TextHeadline"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:gravity="center"
-        android:layout_marginBottom="16dp"/>
+        android:text="@string/performance" />
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
@@ -49,10 +50,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/start_perf_test"
-            android:layout_marginEnd="8dp"
             style="@style/AppButton"
             app:icon="@android:drawable/ic_media_play"
-            app:iconGravity="textStart"/>
+            app:iconGravity="textStart" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/clearResultsButton"

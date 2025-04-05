@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
 
@@ -25,6 +26,7 @@ class FindTaskFragment : Fragment() {
     private lateinit var emptyView: ConstraintLayout
     private lateinit var taskAdapter: TaskAdapter
     private lateinit var taskViewModel: TaskViewModel
+    private lateinit var bottomNavigation: BottomNavigationView
 
     // Priority filter chips
     private lateinit var chipHigh: Chip
@@ -57,6 +59,7 @@ class FindTaskFragment : Fragment() {
         emptyView = view.findViewById(R.id.searchEmptyView)
         resultsCountText = view.findViewById(R.id.resultsCountText)
         clearSearchButton = view.findViewById(R.id.clearSearchButton)
+        bottomNavigation = view.findViewById(R.id.bottomNavigation)
 
         // Initialize priority filter chips
         chipHigh = view.findViewById(R.id.chipHigh)
@@ -71,10 +74,11 @@ class FindTaskFragment : Fragment() {
 
         setupRecyclerView()
         setupFilterListeners()
+        setupBottomNavigation()
 
         taskViewModel = ViewModelProvider(requireActivity())[TaskViewModel::class.java]
 
-        // Set up search button listeners (if any additional listeners are required)
+        // Set up search button listeners
         searchButton.setOnClickListener {
             performFilteredSearch(searchEditText.text.toString().trim())
         }
@@ -86,6 +90,40 @@ class FindTaskFragment : Fragment() {
         performFilteredSearch("")
 
         return view
+    }
+
+    private fun setupBottomNavigation() {
+        bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_tasks -> {
+                    // Return to MainActivity by clearing the back stack
+                    parentFragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    true
+                }
+                R.id.nav_find -> {
+                    // Already in FindTaskFragment
+                    true
+                }
+                R.id.nav_todo -> {
+                    navigateToFragment(CalendarFragment())
+                    true
+                }
+                R.id.nav_finished -> {
+                    navigateToFragment(FinishedTasksFragment())
+                    true
+                }
+                else -> false
+            }
+        }
+        // Highlight the current fragment
+        bottomNavigation.selectedItemId = R.id.nav_find
+    }
+
+    private fun navigateToFragment(fragment: Fragment) {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun setupRecyclerView() {
@@ -102,10 +140,8 @@ class FindTaskFragment : Fragment() {
         itemAnimator.supportsChangeAnimations = false
         recyclerView.itemAnimator = itemAnimator
 
-        // Instantiate TaskAdapter with greyOutCompleted set to false.
         taskAdapter = TaskAdapter(
             listener = { task ->
-                // Open task detail fragment
                 val fragment = TaskDetailFragment.newInstance(task)
                 parentFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, fragment)
@@ -113,11 +149,10 @@ class FindTaskFragment : Fragment() {
                     .commit()
             },
             checkListener = { task, isChecked ->
-                // Update task completion status
                 val updatedTask = task.copy(completed = isChecked)
                 taskViewModel.updateTask(updatedTask)
             },
-            greyOutCompleted = true  // Disable the dimming effect in FindTaskFragment
+            greyOutCompleted = true
         )
 
         recyclerView.adapter = taskAdapter
@@ -126,7 +161,6 @@ class FindTaskFragment : Fragment() {
     private fun setupFilterListeners() {
         val chipListener = CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
             when (buttonView.id) {
-                // Priority filters
                 R.id.chipHigh -> {
                     if (isChecked) activeFilters.add("high") else activeFilters.remove("high")
                     updateChipAppearance(chipHigh, isChecked)
@@ -139,7 +173,6 @@ class FindTaskFragment : Fragment() {
                     if (isChecked) activeFilters.add("low") else activeFilters.remove("low")
                     updateChipAppearance(chipLow, isChecked)
                 }
-                // Category filters
                 R.id.chipWork -> {
                     if (isChecked) activeFilters.add("work") else activeFilters.remove("work")
                     updateChipAppearance(chipWork, isChecked)
@@ -157,11 +190,9 @@ class FindTaskFragment : Fragment() {
                     updateChipAppearance(chipOther, isChecked)
                 }
             }
-            // Re-apply search with current filters
             performFilteredSearch(searchEditText.text.toString().trim())
         }
 
-        // Set up chip listeners
         chipHigh.setOnCheckedChangeListener(chipListener)
         chipMedium.setOnCheckedChangeListener(chipListener)
         chipLow.setOnCheckedChangeListener(chipListener)
@@ -172,24 +203,20 @@ class FindTaskFragment : Fragment() {
     }
 
     private fun performFilteredSearch(query: String) {
-        // Remove previous observers to prevent duplicate data
         taskViewModel.allTasks.removeObservers(viewLifecycleOwner)
         if (query.isNotEmpty()) {
             taskViewModel.searchTasks(query).removeObservers(viewLifecycleOwner)
         }
 
-        // Choose data source based on search query
         val tasksLiveData = if (query.isNotEmpty()) {
             taskViewModel.searchTasks(query)
         } else {
             taskViewModel.allTasks
         }
 
-        // Observe and apply filters
         tasksLiveData.observe(viewLifecycleOwner) { allTasks ->
             var filteredTasks = allTasks
 
-            // Apply priority and category filters
             if (activeFilters.isNotEmpty()) {
                 val priorityFilters = activeFilters.intersect(setOf("high", "medium", "low"))
                 val categoryFilters = activeFilters.minus(priorityFilters)
@@ -207,18 +234,14 @@ class FindTaskFragment : Fragment() {
                 }
             }
 
-            // Update adapter with filtered results
             taskAdapter.updateTasks(filteredTasks)
 
-            // If no filters and no search query, force rebind so greyOutCompleted is applied
             if (activeFilters.isEmpty() && query.isEmpty()) {
                 taskAdapter.notifyDataSetChanged()
             }
 
-            // Update results count display
             resultsCountText.text = "Results (${filteredTasks.size})"
 
-            // Toggle visibility of empty state
             if (filteredTasks.isEmpty()) {
                 recyclerView.visibility = View.GONE
                 emptyView.visibility = View.VISIBLE
@@ -229,17 +252,13 @@ class FindTaskFragment : Fragment() {
         }
     }
 
-
     fun setPriorityFilter(priority: String?) {
-        // Reset chip states
         chipHigh.isChecked = false
         chipMedium.isChecked = false
         chipLow.isChecked = false
 
-        // Clear existing priority filters
         activeFilters.removeAll { it in listOf("high", "medium", "low") }
 
-        // Set chip based on new priority
         when (priority?.lowercase()) {
             "high" -> {
                 chipHigh.isChecked = true
@@ -257,15 +276,12 @@ class FindTaskFragment : Fragment() {
                 updateChipAppearance(chipLow, true)
             }
         }
-        // Reapply filters
         performFilteredSearch(searchEditText.text.toString().trim())
     }
 
     private fun clearAllFilters() {
-        // Clear search text
         searchEditText.setText("")
 
-        // Uncheck all chips and reset appearance
         chipHigh.isChecked = false
         chipMedium.isChecked = false
         chipLow.isChecked = false
@@ -284,11 +300,9 @@ class FindTaskFragment : Fragment() {
 
         activeFilters.clear()
 
-        // Refresh with no filters and force rebind
         performFilteredSearch("")
         taskAdapter.notifyDataSetChanged()
     }
-
 
     private fun updateChipAppearance(chip: Chip, isSelected: Boolean) {
         if (isSelected) {

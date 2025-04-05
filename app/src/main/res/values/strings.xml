@@ -156,4 +156,15 @@
     <string name="tab_in_progress">In Progress</string>
     <string name="tab_completed">Completed</string>
     <string name="tab_finished">Finished</string>
+    <string name="search_tasks">Search Tasks</string>
+    <string name="clear_search">Clear Search</string>
+    <string name="adjusting_find_tasks">Try adjusting your search terms or filters</string>
+    <string name="no_tasks_found">No tasks found</string>
+    <string name="results_0">Results (0)</string>
+    <string name="search">Search</string>
+    <string name="completed_tasks">Completed Tasks</string>
+    <string name="upcoming_tasks">Upcoming Tasks</string>
+    <string name="tasks_scheduled_for_upcoming_days">Tasks scheduled for upcoming days</string>
+    <string name="no_upcoming_tasks">No upcoming tasks</string>
+    <string name="add_tasks_todo">Add tasks with due dates to see them here</string>
 </resources>
