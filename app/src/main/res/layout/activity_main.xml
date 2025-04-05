@@ -593,22 +593,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- FAB -->
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text=""
-            android:contentDescription="@string/add_task"
-            app:icon="@drawable/ic_add"
-            app:iconTint="@color/white"
-            app:iconPadding="0dp"
-            app:backgroundTint="@color/colorPrimary"
-            app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Fragment Container -->

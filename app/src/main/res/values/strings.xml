@@ -167,4 +167,5 @@
     <string name="tasks_scheduled_for_upcoming_days">Tasks scheduled for upcoming days</string>
     <string name="no_upcoming_tasks">No upcoming tasks</string>
     <string name="add_tasks_todo">Add tasks with due dates to see them here</string>
+    <string name="back_btn">Back to Main</string>
 </resources>

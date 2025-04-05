@@ -26,20 +26,17 @@ class ProfilesFragment : Fragment() {
         profileManager = ProfileManager(requireContext())
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.profilesRecyclerView)
+        val backButton = view.findViewById<ImageView>(R.id.backButton)
+
         adapter = ProfilesAdapter(
             onProfileSelected = { profile ->
-                // Update the active profile
                 profileManager.setActiveProfile(profile.id)
-                // Refresh the UI in MainActivity
                 (activity as? MainActivity)?.refreshProfileUI()
-                // Update TaskViewModel so that tasks refresh with the new profile
                 (activity as? MainActivity)?.taskViewModel?.refreshActiveProfile()
                 Toast.makeText(context, "Switched to ${profile.name}", Toast.LENGTH_SHORT).show()
-                // Immediately pop this fragment off the back stack to show main activity UI
                 parentFragmentManager.popBackStack()
             },
             onProfileEdit = { profile ->
-                // Navigate to EditProfileFragment for editing
                 val bundle = Bundle().apply { putString("profileId", profile.id) }
                 val editFragment = EditProfileFragment().apply { arguments = bundle }
                 parentFragmentManager.beginTransaction()
@@ -66,13 +63,18 @@ class ProfilesFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         view.findViewById<FloatingActionButton>(R.id.addProfileFab).setOnClickListener {
-            // Navigate to EditProfileFragment for creating a new profile
             val bundle = Bundle().apply { putBoolean("isNewProfile", true) }
             val editFragment = EditProfileFragment().apply { arguments = bundle }
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, editFragment)
                 .addToBackStack(null)
                 .commit()
+        }
+
+        // Back button to return to MainActivity
+        backButton.setOnClickListener {
+            parentFragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            (activity as? MainActivity)?.showMainView()
         }
 
         loadProfiles()
@@ -91,7 +93,6 @@ class ProfilesFragment : Fragment() {
         loadProfiles()
     }
 
-    // Adapter for displaying profiles
     private class ProfilesAdapter(
         private val onProfileSelected: (UserProfile) -> Unit,
         private val onProfileEdit: (UserProfile) -> Unit,

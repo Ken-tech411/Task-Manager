@@ -1,13 +1,13 @@
 package com.example.taskmanager
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
-import androidx.lifecycle.viewModelScope
-import  androidx. lifecycle. MutableLiveData
 import androidx.lifecycle.switchMap
-
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -15,17 +15,18 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
 
     private val taskDao: TaskDao = TaskDatabaseProvider.getDatabase(application).taskDao()
 
-    // MutableLiveData for active profile id
+    // MutableLiveData for active profile ID
     private val _activeProfileId = MutableLiveData<String>()
     val activeProfileId: LiveData<String> get() = _activeProfileId
 
     init {
-        // Initialize with the current active profile id
-        _activeProfileId.value = ProfileManager(getApplication()).getActiveProfile()?.id ?: ""
+        // Initialize with the current active profile ID
+        val initialProfileId = ProfileManager(getApplication()).getActiveProfile()?.id ?: ""
+        _activeProfileId.value = initialProfileId
+        Log.d("TaskViewModel", "Initialized with active profile ID: $initialProfileId")
     }
 
-    // Now use switchMap so that whenever the activeProfileId changes,
-    // we re-run the query and filtering.
+    // Fetch tasks directly by profile ID using switchMap
     val allTasks: LiveData<List<Task>> = activeProfileId.switchMap { profileId ->
         taskDao.getAllTasks().map { tasks ->
             tasks.filter { it.profileId == profileId }
@@ -40,33 +41,39 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         tasks.filter { it.completed }
     }
 
-    // Call this method to update the active profile id
+    // Update the active profile ID and log the change
     fun refreshActiveProfile() {
-        _activeProfileId.value = ProfileManager(getApplication()).getActiveProfile()?.id ?: ""
+        val newProfileId = ProfileManager(getApplication()).getActiveProfile()?.id ?: ""
+        Log.d("TaskViewModel", "Refreshing active profile to: $newProfileId")
+        _activeProfileId.value = newProfileId
     }
 
     fun addTask(task: Task) {
         viewModelScope.launch(Dispatchers.IO) {
             taskDao.insert(task)
+            Log.d("TaskViewModel", "Added task: ${task.title} for profile: ${task.profileId}")
         }
     }
 
     fun updateTask(task: Task) {
         viewModelScope.launch(Dispatchers.IO) {
             taskDao.update(task)
+            Log.d("TaskViewModel", "Updated task: ${task.title}")
         }
     }
 
     fun deleteTask(task: Task) {
         viewModelScope.launch(Dispatchers.IO) {
             taskDao.delete(task)
+            Log.d("TaskViewModel", "Deleted task: ${task.title}")
         }
     }
 
     fun searchTasks(text: String): LiveData<List<Task>> {
-        return taskDao.searchTasks("%$text%").map { tasks ->
-            tasks.filter { it.profileId == _activeProfileId.value }
+        return taskDao.searchTasks("%$text%").switchMap { tasks ->
+            activeProfileId.map { profileId ->
+                tasks.filter { it.profileId == profileId }
+            }
         }
     }
 }
-

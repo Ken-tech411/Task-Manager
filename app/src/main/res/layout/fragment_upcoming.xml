@@ -51,19 +51,7 @@
                 app:cardElevation="0dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
-
-                <TextView
-                    android:id="@+id/todoHeaderText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="12dp"
-                    android:text="@string/tasks_scheduled_for_upcoming_days"
-                    style="@style/TextBody"
-                    android:textStyle="italic"
-                    android:textColor="@color/blue"
-                    android:alpha="0.9"/>
-            </com.google.android.material.card.MaterialCardView>
+                app:layout_constraintEnd_toEndOf="parent"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/todoRecyclerView"

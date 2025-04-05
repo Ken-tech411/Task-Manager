@@ -26,7 +26,7 @@ class CalendarFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_todo, container, false)
+        val view = inflater.inflate(R.layout.fragment_upcoming, container, false)
 
         recyclerView = view.findViewById(R.id.todoRecyclerView)
         emptyView = view.findViewById(R.id.todoEmptyView)

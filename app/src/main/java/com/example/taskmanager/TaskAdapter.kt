@@ -27,42 +27,38 @@ class TaskAdapter(
         fun bind(task: Task, listener: (Task) -> Unit, checkListener: (Task, Boolean) -> Unit) {
             binding.apply {
                 taskTitle.text = task.title
-                
+
                 // Show description or notes or both
-                val descriptionText = if (task.description.isNotEmpty() && task.notes.isNotEmpty()) {
-                    "${task.description}\n\nNotes: ${task.notes}"
-                } else if (task.notes.isNotEmpty()) {
-                    "Notes: ${task.notes}"
-                } else {
-                    task.description
+                val descriptionText = when {
+                    task.description.isNotEmpty() && task.notes.isNotEmpty() -> "${task.description}\n\nNotes: ${task.notes}"
+                    task.notes.isNotEmpty() -> "Notes: ${task.notes}"
+                    else -> task.description
                 }
-                
                 taskDescription.text = descriptionText
-                
+
                 taskCategory.text = task.category ?: "Uncategorized"
-                
-                // For due date, indicate if it's recurring
+
+                // Handle recurring tasks in due date
                 val recurringSymbol = when (task.recurrence) {
                     "DAILY" -> "🔄 Daily"
                     "WEEKLY" -> "🔄 Weekly"
                     "MONTHLY" -> "🔄 Monthly"
                     else -> ""
                 }
-                
                 taskDueDate.text = if (recurringSymbol.isNotEmpty()) {
                     "Due: ${task.dueDate ?: "No due date"} ($recurringSymbol)"
                 } else {
                     "Due: ${task.dueDate ?: "No due date"}"
                 }
 
-                // Handle checkbox state changes
+                // Handle checkbox state
                 taskCompleted.setOnCheckedChangeListener(null)
                 taskCompleted.isChecked = task.completed
                 taskCompleted.setOnCheckedChangeListener { _, isChecked ->
                     checkListener(task, isChecked)
                 }
 
-                // Set priority indicator color based on task.priority
+                // Set priority indicator color
                 val context = root.context
                 val backgroundColor = when (task.priority.lowercase()) {
                     "high" -> context.getColor(android.R.color.holo_red_light)
@@ -71,7 +67,7 @@ class TaskAdapter(
                 }
                 priorityIndicator.setBackgroundColor(backgroundColor)
 
-                // Apply grey-out effect if greyOutCompleted is true and the task is completed.
+                // Apply grey-out effect for completed tasks
                 root.alpha = if (greyOutCompleted && task.completed) 0.6f else 1.0f
 
                 // Set click listener
@@ -81,17 +77,17 @@ class TaskAdapter(
     }
 
     private class TaskDiffCallback : DiffUtil.ItemCallback<Task>() {
-        override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean =
-            oldItem.id == newItem.id
+        override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean {
+            return oldItem.id == newItem.id
+        }
 
-        override fun areContentsTheSame(oldItem: Task, newItem: Task): Boolean =
-            false // Always force rebind to update the grey-out effect.
+        override fun areContentsTheSame(oldItem: Task, newItem: Task): Boolean {
+            return oldItem == newItem // Compare all fields using data class equality
+        }
     }
 
-    // Updated updateTasks that forces a full rebind.
+    // Simplified updateTasks to rely on ListAdapter's diffing
     fun updateTasks(newTasks: List<Task>) {
-        submitList(newTasks.toList()) {
-            notifyDataSetChanged()
-        }
+        submitList(newTasks.toList())
     }
 }

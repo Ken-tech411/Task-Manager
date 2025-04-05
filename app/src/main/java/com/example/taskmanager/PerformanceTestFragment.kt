@@ -5,6 +5,7 @@ import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -17,11 +18,6 @@ import java.util.Date
 import java.util.Locale
 import kotlin.random.Random
 
-/**
- * Fragment to conduct performance tests for the investigation component.
- * This fragment allows running controlled tests to measure database performance
- * with different implementations.
- */
 class PerformanceTestFragment : Fragment() {
 
     private var _binding: FragmentPerformanceTestBinding? = null
@@ -40,8 +36,8 @@ class PerformanceTestFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Use the shared viewModel from MainActivity to ensure data consistency
         taskViewModel = (requireActivity() as MainActivity).taskViewModel
+        val backButton = view.findViewById<ImageView>(R.id.backButton)
 
         binding.startTestButton.setOnClickListener {
             if (!isTestRunning) {
@@ -54,6 +50,12 @@ class PerformanceTestFragment : Fragment() {
         binding.clearResultsButton.setOnClickListener {
             binding.resultsTextView.text = ""
         }
+
+        // Back button to return to MainActivity
+        backButton.setOnClickListener {
+            parentFragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            (activity as? MainActivity)?.showMainView()
+        }
     }
 
     private fun startPerformanceTest() {
@@ -62,29 +64,20 @@ class PerformanceTestFragment : Fragment() {
         binding.progressBar.visibility = View.VISIBLE
         binding.resultsTextView.append("Starting performance test at ${getCurrentTime()}\n")
 
-        // Toggle this flag to switch between bulk insertion (false) and sequential insertion (true)
         val useSequentialInsertion = false
 
-        // Run the test in a background thread
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                // Run the insertion test based on the selected variant
                 val insertionTime = if (useSequentialInsertion) {
                     runSequentialInsertionTest(100)
                 } else {
                     runBulkInsertionTest(100)
                 }
 
-                // Run the query test
                 val queryTime = runQueryTest()
-
-                // Run the update test
                 val updateTime = runUpdateTest()
-
-                // Run the delete test
                 val deleteTime = runDeleteTest()
 
-                // Update UI with results
                 withContext(Dispatchers.Main) {
                     binding.resultsTextView.append("\n--- TEST RESULTS ---\n")
                     if (useSequentialInsertion) {
@@ -120,7 +113,6 @@ class PerformanceTestFragment : Fragment() {
         val categories = arrayOf("Work", "Personal", "Shopping", "Study", "Other")
         val priorities = arrayOf("High", "Medium", "Low")
 
-        // Get the active profile ID (or empty if none)
         val profileManager = ProfileManager(requireContext())
         val activeProfile = profileManager.getActiveProfile()
         val profileId = activeProfile?.id ?: ""
@@ -140,7 +132,6 @@ class PerformanceTestFragment : Fragment() {
         return SystemClock.elapsedRealtime() - startTime
     }
 
-    // Variant 2: Sequential insertion test
     private suspend fun runSequentialInsertionTest(count: Int): Long {
         val startTime = SystemClock.elapsedRealtime()
         val dao = TaskDatabaseProvider.getDatabase(requireContext()).taskDao()
@@ -148,7 +139,6 @@ class PerformanceTestFragment : Fragment() {
         val categories = arrayOf("Work", "Personal", "Shopping", "Study", "Other")
         val priorities = arrayOf("High", "Medium", "Low")
 
-        // Get the active profile ID (or empty if none)
         val profileManager = ProfileManager(requireContext())
         val activeProfile = profileManager.getActiveProfile()
         val profileId = activeProfile?.id ?: ""
@@ -172,7 +162,6 @@ class PerformanceTestFragment : Fragment() {
         val startTime = SystemClock.elapsedRealtime()
         val dao = TaskDatabaseProvider.getDatabase(requireContext()).taskDao()
 
-        // Use a synchronous query for measurement purposes
         val tasks = dao.getAllTasksSync()
 
         withContext(Dispatchers.Main) {
@@ -186,10 +175,7 @@ class PerformanceTestFragment : Fragment() {
         val startTime = SystemClock.elapsedRealtime()
         val dao = TaskDatabaseProvider.getDatabase(requireContext()).taskDao()
 
-        // Get all tasks
         val tasks = dao.getAllTasksSync()
-
-        // Update each task
         var updateCount = 0
         for (task in tasks) {
             val updatedTask = task.copy(
@@ -210,11 +196,8 @@ class PerformanceTestFragment : Fragment() {
         val startTime = SystemClock.elapsedRealtime()
         val dao = TaskDatabaseProvider.getDatabase(requireContext()).taskDao()
 
-        // Get all tasks
         val tasks = dao.getAllTasksSync()
         var deleteCount = 0
-
-        // Delete each task
         for (task in tasks) {
             deleteCount += dao.delete(task)
         }

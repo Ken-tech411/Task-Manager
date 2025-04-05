@@ -1,6 +1,7 @@
 package com.example.taskmanager
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.ImageView
@@ -34,6 +35,7 @@ class MainActivity : AppCompatActivity(), EditProfileFragment.OnProfileUpdatedLi
     private lateinit var profileManager: ProfileManager
     private lateinit var mainContent: View
     private lateinit var fragmentContainer: View
+    private lateinit var bottomNavigation: com.google.android.material.bottomnavigation.BottomNavigationView
 
     // Header elements
     private lateinit var tasksProgressText: TextView
@@ -74,6 +76,7 @@ class MainActivity : AppCompatActivity(), EditProfileFragment.OnProfileUpdatedLi
         tasksProgressText = findViewById(R.id.tasksProgressText)
         tasksProgressBar = findViewById(R.id.tasksProgressBar)
         progressPercentageText = findViewById(R.id.progressPercentageText)
+        bottomNavigation = findViewById(R.id.bottomNavigation)
 
         // Stats section
         statsSection = findViewById(R.id.statsSection)
@@ -101,16 +104,15 @@ class MainActivity : AppCompatActivity(), EditProfileFragment.OnProfileUpdatedLi
 
         // Observe tasks and update UI
         taskViewModel.allTasks.observe(this) { tasks ->
+            Log.d("MainActivity", "Received ${tasks.size} tasks from ViewModel")
+            tasks.forEach { task ->
+                Log.d("MainActivity", "Task: ${task.title}, ProfileId: ${task.profileId}")
+            }
             updateTasks(tasks)
         }
 
         // New Task button
         findViewById<MaterialButton>(R.id.newTaskButton).setOnClickListener {
-            openTaskDetailFragment()
-        }
-
-        // FAB
-        findViewById<com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton>(R.id.fab).setOnClickListener {
             openTaskDetailFragment()
         }
 
@@ -140,7 +142,6 @@ class MainActivity : AppCompatActivity(), EditProfileFragment.OnProfileUpdatedLi
         }
 
         // Bottom Navigation
-        val bottomNavigation: com.google.android.material.bottomnavigation.BottomNavigationView = findViewById(R.id.bottomNavigation)
         bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_tasks -> {
@@ -252,7 +253,7 @@ class MainActivity : AppCompatActivity(), EditProfileFragment.OnProfileUpdatedLi
                     3 -> "completed"
                     else -> "all"
                 }
-                updateTasks(taskViewModel.allTasks.value!!)
+                updateTasks(taskViewModel.allTasks.value ?: emptyList())
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -302,9 +303,16 @@ class MainActivity : AppCompatActivity(), EditProfileFragment.OnProfileUpdatedLi
             "Title" -> filteredTasks = filteredTasks.sortedBy { it.title }
         }
 
-        taskAdapter.updateTasks(filteredTasks)
+        tasks.forEach { task ->
+            Log.d("TaskProfile", "Task: ${task.title}, ProfileId: ${task.profileId}")
+        }
+        taskAdapter.updateTasks(tasks)
 
-        // Update UI
+        // Update the adapter with filtered tasks
+        taskAdapter.updateTasks(filteredTasks)
+        Log.d("MainActivity", "Updated adapter with ${filteredTasks.size} tasks")
+
+        // Update UI visibility
         recyclerView.isVisible = filteredTasks.isNotEmpty()
         emptyView.isVisible = filteredTasks.isEmpty()
 
@@ -351,15 +359,18 @@ class MainActivity : AppCompatActivity(), EditProfileFragment.OnProfileUpdatedLi
         if (activeProfile != null) {
             userNameTextView.text = activeProfile.name
             userEmailTextView.text = activeProfile.email
+            Log.d("MainActivity", "Refreshed profile UI: ${activeProfile.name}, ${activeProfile.email}")
         } else {
             userNameTextView.setText(R.string.add_profile)
             userEmailTextView.setText(R.string.tap_to_create_profile)
+            Log.d("MainActivity", "No active profile, prompting to add one")
         }
     }
 
     override fun onResume() {
         super.onResume()
         refreshProfileUI()
+        taskViewModel.refreshActiveProfile() // Ensure tasks are refreshed on resume
     }
 
     override fun onProfileUpdated() {
@@ -389,6 +400,7 @@ class MainActivity : AppCompatActivity(), EditProfileFragment.OnProfileUpdatedLi
     private fun showProfilesFragment() {
         hideMainView()
         fragmentContainer.isVisible = true
+        hideBottomNavigation()
         if (profileManager.getAllProfiles().isEmpty()) {
             val bundle = Bundle().apply {
                 putBoolean("isNewProfile", true)
@@ -412,6 +424,7 @@ class MainActivity : AppCompatActivity(), EditProfileFragment.OnProfileUpdatedLi
     private fun showPerformanceTestFragment() {
         hideMainView()
         fragmentContainer.isVisible = true
+        hideBottomNavigation()
         val fragment = PerformanceTestFragment()
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
@@ -419,10 +432,13 @@ class MainActivity : AppCompatActivity(), EditProfileFragment.OnProfileUpdatedLi
             .commit()
     }
 
-    private fun showMainView() {
+    fun showMainView() {
         fragmentContainer.isVisible = false
         mainContent.isVisible = true
-        updateTasks(taskViewModel.allTasks.value!!)
+        showBottomNavigation()
+        taskViewModel.refreshActiveProfile() // Refresh tasks when returning to main view
+        val tasks = taskViewModel.allTasks.value ?: emptyList()
+        updateTasks(tasks)
     }
 
     private fun hideMainView() {
@@ -436,5 +452,13 @@ class MainActivity : AppCompatActivity(), EditProfileFragment.OnProfileUpdatedLi
             .replace(R.id.fragment_container, TaskDetailFragment())
             .addToBackStack(null)
             .commit()
+    }
+
+    private fun hideBottomNavigation() {
+        bottomNavigation.visibility = View.GONE
+    }
+
+    private fun showBottomNavigation() {
+        bottomNavigation.visibility = View.VISIBLE
     }
 }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -37,7 +38,7 @@ class EditProfileFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         profileManager = ProfileManager(requireContext())
-        
+
         arguments?.let {
             profileId = it.getString("profileId")
             isNewProfile = it.getBoolean("isNewProfile", false)
@@ -54,7 +55,8 @@ class EditProfileFragment : Fragment() {
         val editUserName = view.findViewById<EditText>(R.id.editUserName)
         val editUserEmail = view.findViewById<EditText>(R.id.editUserEmail)
         val saveButton = view.findViewById<MaterialButton>(R.id.saveProfileButton)
-        
+        val backButton = view.findViewById<ImageView>(R.id.backButton)
+
         // Set title based on whether we're creating or editing
         titleTextView.text = if (isNewProfile) "Create New Profile" else "Edit Profile"
 
@@ -88,7 +90,7 @@ class EditProfileFragment : Fragment() {
 
             // Save the profile
             profileManager.saveProfile(profile)
-            
+
             // If this is a new profile and it's the only one, set it as active
             if (isNewProfile && profileManager.getAllProfiles().size == 1) {
                 profileManager.setActiveProfile(profile.id)
@@ -97,6 +99,12 @@ class EditProfileFragment : Fragment() {
             listener?.onProfileUpdated()
             Toast.makeText(requireContext(), "Profile saved successfully", Toast.LENGTH_SHORT).show()
             parentFragmentManager.popBackStack()
+        }
+
+        // Back button to return to MainActivity
+        backButton.setOnClickListener {
+            parentFragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            (activity as? MainActivity)?.showMainView()
         }
 
         return view
