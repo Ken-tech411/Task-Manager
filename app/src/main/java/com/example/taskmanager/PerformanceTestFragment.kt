@@ -1,4 +1,4 @@
-package com.example.taskmaster
+package com.example.taskmanager
 
 import android.os.Bundle
 import android.os.SystemClock
@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.example.taskmaster.databinding.FragmentPerformanceTestBinding
+import com.example.taskmanager.databinding.FragmentPerformanceTestBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

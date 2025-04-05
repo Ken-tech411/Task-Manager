@@ -1,4 +1,4 @@
-package com.example.taskmaster
+package com.example.taskmanager
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

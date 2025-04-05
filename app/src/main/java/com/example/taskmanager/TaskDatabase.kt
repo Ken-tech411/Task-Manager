@@ -1,4 +1,4 @@
-package com.example.taskmaster
+package com.example.taskmanager
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

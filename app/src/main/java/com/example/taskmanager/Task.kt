@@ -1,4 +1,4 @@
-package com.example.taskmaster
+package com.example.taskmanager
 
 import android.os.Parcelable
 import androidx.room.ColumnInfo

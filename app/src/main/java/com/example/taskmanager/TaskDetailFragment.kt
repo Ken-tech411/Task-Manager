@@ -1,4 +1,4 @@
-package com.example.taskmaster
+package com.example.taskmanager
 
 import android.app.DatePickerDialog
 import android.os.Bundle
@@ -8,9 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.RadioButton
 import android.widget.Toast
-import com.example.taskmaster.databinding.FragmentTaskDetailBinding
+import com.example.taskmanager.databinding.FragmentTaskDetailBinding
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale

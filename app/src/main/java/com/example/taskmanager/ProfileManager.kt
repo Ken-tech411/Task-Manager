@@ -1,7 +1,6 @@
-package com.example.taskmaster
+package com.example.taskmanager
 
 import android.content.Context
-import com.example.taskmaster.UserProfile
 import com.google.gson.Gson
 
 class ProfileManager(private val context: Context) {

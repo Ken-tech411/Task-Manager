@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">TaskMaster</string>
+    <string name="app_name">Task Manager</string>
 
     <!-- Navigation strings -->
     <string name="add_task">Add Task</string>

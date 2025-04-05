@@ -1,4 +1,4 @@
-package com.example.taskmaster
+package com.example.taskmanager
 
 import android.content.Context
 import android.os.Bundle
@@ -9,8 +9,6 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.example.taskmaster.UserProfile
-import com.example.taskmaster.ProfileManager
 import com.google.android.material.button.MaterialButton
 
 class EditProfileFragment : Fragment() {

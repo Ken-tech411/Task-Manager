@@ -1,4 +1,4 @@
-package com.example.taskmaster
+package com.example.taskmanager
 
 import android.content.Context
 import android.graphics.Canvas

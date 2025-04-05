@@ -1,10 +1,9 @@
-package com.example.taskmaster
+package com.example.taskmanager
 
 import android.content.Context
 import androidx.room.Room
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.room.RoomDatabase
-import java.util.concurrent.Executors
 
 object TaskDatabaseProvider {
     private var INSTANCE: TaskDatabase? = null

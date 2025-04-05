@@ -1,4 +1,4 @@
-package com.example.taskmaster
+package com.example.taskmanager
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -8,10 +8,6 @@ import androidx.lifecycle.viewModelScope
 import  androidx. lifecycle. MutableLiveData
 import androidx.lifecycle.switchMap
 
-import androidx.work.Constraints
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

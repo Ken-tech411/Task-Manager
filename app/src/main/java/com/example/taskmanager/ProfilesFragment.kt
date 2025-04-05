@@ -1,4 +1,4 @@
-package com.example.taskmaster
+package com.example.taskmanager
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,8 +11,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.taskmaster.UserProfile
-import com.example.taskmaster.ProfileManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class ProfilesFragment : Fragment() {
