@@ -28,7 +28,7 @@ class CalendarFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_upcoming, container, false)
 
-        recyclerView = view.findViewById(R.id.todoRecyclerView)
+        recyclerView = view.findViewById(R.id.CalendarRecyclerView)
         emptyView = view.findViewById(R.id.todoEmptyView)
         bottomNavigation = view.findViewById(R.id.bottomNavigation)
 

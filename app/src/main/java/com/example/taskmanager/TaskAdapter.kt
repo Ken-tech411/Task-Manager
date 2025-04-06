@@ -2,10 +2,12 @@ package com.example.taskmanager
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.taskmanager.databinding.ItemTaskBinding
+import android.util.Log
 
 class TaskAdapter(
     private val listener: (Task) -> Unit,
@@ -25,6 +27,8 @@ class TaskAdapter(
 
     inner class TaskViewHolder(private val binding: ItemTaskBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(task: Task, listener: (Task) -> Unit, checkListener: (Task, Boolean) -> Unit) {
+            Log.d("TaskAdapter", "Binding task: ${task.title}, completed: ${task.completed}")
+
             binding.apply {
                 taskTitle.text = task.title
 
@@ -68,7 +72,23 @@ class TaskAdapter(
                 priorityIndicator.setBackgroundColor(backgroundColor)
 
                 // Apply grey-out effect for completed tasks
-                root.alpha = if (greyOutCompleted && task.completed) 0.6f else 1.0f
+                if (greyOutCompleted && task.completed) {
+                    root.alpha = 0.6f
+                    taskTitle.setTextColor(ContextCompat.getColor(context, R.color.grey))
+                    taskDescription.setTextColor(ContextCompat.getColor(context, R.color.grey))
+                    taskDueDate.setTextColor(ContextCompat.getColor(context, R.color.grey))
+                    taskDueDate.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.ic_menu_today_grey, 0, 0, 0
+                    )
+                } else {
+                    root.alpha = 1.0f
+                    taskTitle.setTextColor(ContextCompat.getColor(context, R.color.textPrimary))
+                    taskDescription.setTextColor(ContextCompat.getColor(context, R.color.textSecondary))
+                    taskDueDate.setTextColor(ContextCompat.getColor(context, R.color.textSecondary))
+                    taskDueDate.setCompoundDrawablesWithIntrinsicBounds(
+                        android.R.drawable.ic_menu_today, 0, 0, 0
+                    )
+                }
 
                 // Set click listener
                 root.setOnClickListener { listener(task) }
@@ -82,12 +102,14 @@ class TaskAdapter(
         }
 
         override fun areContentsTheSame(oldItem: Task, newItem: Task): Boolean {
-            return oldItem == newItem // Compare all fields using data class equality
+            return oldItem == newItem
         }
     }
 
-    // Simplified updateTasks to rely on ListAdapter's diffing
     fun updateTasks(newTasks: List<Task>) {
-        submitList(newTasks.toList())
+        submitList(newTasks.toList()) {
+            // Force a full notifyDataSetChanged to ensure all views are rebound
+            notifyDataSetChanged()
+        }
     }
 }

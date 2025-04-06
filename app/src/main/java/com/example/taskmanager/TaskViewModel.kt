@@ -41,11 +41,15 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         tasks.filter { it.completed }
     }
 
-    // Update the active profile ID and log the change
+    // Update the active profile ID only if it has changed
     fun refreshActiveProfile() {
         val newProfileId = ProfileManager(getApplication()).getActiveProfile()?.id ?: ""
-        Log.d("TaskViewModel", "Refreshing active profile to: $newProfileId")
-        _activeProfileId.value = newProfileId
+        if (_activeProfileId.value != newProfileId) {
+            Log.d("TaskViewModel", "Refreshing active profile to: $newProfileId")
+            _activeProfileId.value = newProfileId
+        } else {
+            Log.d("TaskViewModel", "Active profile unchanged: $newProfileId")
+        }
     }
 
     fun addTask(task: Task) {

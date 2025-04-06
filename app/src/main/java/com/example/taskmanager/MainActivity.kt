@@ -3,9 +3,7 @@ package com.example.taskmanager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.ImageView
-import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -21,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.progressindicator.LinearProgressIndicator
-import com.google.android.material.tabs.TabLayout
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -51,16 +48,6 @@ class MainActivity : AppCompatActivity(), EditProfileFragment.OnProfileUpdatedLi
     private lateinit var completionText: TextView
     private lateinit var inProgressText: TextView
 
-    // Filter section
-    private lateinit var filterSortSection: View
-    private lateinit var toggleFiltersButton: MaterialButton
-    private lateinit var prioritySpinner: Spinner
-    private lateinit var categorySpinner: Spinner
-    private lateinit var sortBySpinner: Spinner
-    private lateinit var taskStatusTabs: TabLayout
-
-    private var currentStatusFilter: String = "all"
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -87,24 +74,15 @@ class MainActivity : AppCompatActivity(), EditProfileFragment.OnProfileUpdatedLi
         completionText = findViewById(R.id.completionText)
         inProgressText = findViewById(R.id.inProgressText)
 
-        // Filter section
-        filterSortSection = findViewById(R.id.filterSortSection)
-        toggleFiltersButton = findViewById(R.id.toggleFiltersButton)
-        prioritySpinner = findViewById(R.id.prioritySpinner)
-        categorySpinner = findViewById(R.id.categorySpinner)
-        sortBySpinner = findViewById(R.id.sortBySpinner)
-        taskStatusTabs = findViewById(R.id.taskStatusTabs)
-
         setupRecyclerView()
         setupToggles()
-        setupFilters()
 
         // Initialize ViewModel
         taskViewModel = ViewModelProvider(this)[TaskViewModel::class.java]
 
         // Observe tasks and update UI
         taskViewModel.allTasks.observe(this) { tasks ->
-            Log.d("MainActivity", "Received ${tasks.size} tasks from ViewModel")
+            Log.d("MainActivity", "Received ${tasks.size} tasks from ViewModel for profile: ${taskViewModel.activeProfileId.value}")
             tasks.forEach { task ->
                 Log.d("MainActivity", "Task: ${task.title}, ProfileId: ${task.profileId}")
             }
@@ -195,7 +173,8 @@ class MainActivity : AppCompatActivity(), EditProfileFragment.OnProfileUpdatedLi
     }
 
     private fun setupRecyclerView() {
-        recyclerView.setHasFixedSize(true)
+        // Remove setHasFixedSize(true) to allow dynamic height adjustment
+        // recyclerView.setHasFixedSize(true)
         val layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
 
@@ -234,87 +213,20 @@ class MainActivity : AppCompatActivity(), EditProfileFragment.OnProfileUpdatedLi
             statsSection.isVisible = !isVisible
             toggleStatsButton.setText(if (isVisible) R.string.show_stats else R.string.hide_stats)
         }
-
-        toggleFiltersButton.setOnClickListener {
-            val isVisible = filterSortSection.isVisible
-            filterSortSection.isVisible = !isVisible
-            toggleFiltersButton.setText(if (isVisible) R.string.show_filters else R.string.hide_filters)
-        }
-    }
-
-    private fun setupFilters() {
-        // Status filter tabs
-        taskStatusTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                currentStatusFilter = when (tab?.position) {
-                    0 -> "all"
-                    1 -> "todo"
-                    2 -> "in_progress"
-                    3 -> "completed"
-                    else -> "all"
-                }
-                updateTasks(taskViewModel.allTasks.value ?: emptyList())
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
-        })
-
-        // Priority and Category spinners are already populated via XML
-        // Sort By spinner
-        val sortOptions = arrayOf("Due Date", "Priority", "Title")
-        val sortAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, sortOptions)
-        sortAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        sortBySpinner.adapter = sortAdapter
     }
 
     private fun updateTasks(tasks: List<Task>) {
-        // Apply status filter
-        var filteredTasks = when (currentStatusFilter) {
-            "todo" -> tasks.filter { !it.completed && !isOverdue(it) }
-            "in_progress" -> tasks.filter { !it.completed }
-            "completed" -> tasks.filter { it.completed }
-            else -> tasks
-        }
-
-        // Apply priority filter
-        val selectedPriority = prioritySpinner.selectedItem.toString()
-        if (selectedPriority != getString(R.string.all_priorities)) {
-            filteredTasks = filteredTasks.filter { it.priority.equals(selectedPriority, ignoreCase = true) }
-        }
-
-        // Apply category filter
-        val selectedCategory = categorySpinner.selectedItem.toString()
-        if (selectedCategory != getString(R.string.all_categories)) {
-            filteredTasks = filteredTasks.filter { it.category.equals(selectedCategory, ignoreCase = true) }
-        }
-
-        // Apply sort
-        when (sortBySpinner.selectedItem.toString()) {
-            "Due Date" -> filteredTasks = filteredTasks.sortedBy { it.dueDate }
-            "Priority" -> filteredTasks = filteredTasks.sortedBy {
-                when (it.priority.lowercase()) {
-                    "high" -> 1
-                    "medium" -> 2
-                    "low" -> 3
-                    else -> 4
-                }
-            }
-            "Title" -> filteredTasks = filteredTasks.sortedBy { it.title }
-        }
-
-        tasks.forEach { task ->
-            Log.d("TaskProfile", "Task: ${task.title}, ProfileId: ${task.profileId}")
-        }
         taskAdapter.updateTasks(tasks)
-
-        // Update the adapter with filtered tasks
-        taskAdapter.updateTasks(filteredTasks)
-        Log.d("MainActivity", "Updated adapter with ${filteredTasks.size} tasks")
+        Log.d("MainActivity", "Updated adapter with ${tasks.size} tasks")
 
         // Update UI visibility
-        recyclerView.isVisible = filteredTasks.isNotEmpty()
-        emptyView.isVisible = filteredTasks.isEmpty()
+        recyclerView.isVisible = tasks.isNotEmpty()
+        emptyView.isVisible = tasks.isEmpty()
+
+        // Log RecyclerView height after update
+        recyclerView.post {
+            Log.d("MainActivity", "RecyclerView height after update: ${recyclerView.height}")
+        }
 
         // Update progress
         val totalTasks = tasks.size
@@ -370,7 +282,7 @@ class MainActivity : AppCompatActivity(), EditProfileFragment.OnProfileUpdatedLi
     override fun onResume() {
         super.onResume()
         refreshProfileUI()
-        taskViewModel.refreshActiveProfile() // Ensure tasks are refreshed on resume
+        taskViewModel.refreshActiveProfile()
     }
 
     override fun onProfileUpdated() {
@@ -436,7 +348,7 @@ class MainActivity : AppCompatActivity(), EditProfileFragment.OnProfileUpdatedLi
         fragmentContainer.isVisible = false
         mainContent.isVisible = true
         showBottomNavigation()
-        taskViewModel.refreshActiveProfile() // Refresh tasks when returning to main view
+        taskViewModel.refreshActiveProfile()
         val tasks = taskViewModel.allTasks.value ?: emptyList()
         updateTasks(tasks)
     }

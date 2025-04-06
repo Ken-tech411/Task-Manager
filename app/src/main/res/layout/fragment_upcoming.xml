@@ -54,7 +54,7 @@
                 app:layout_constraintEnd_toEndOf="parent"/>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/todoRecyclerView"
+                android:id="@+id/CalendarRecyclerView"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:clipToPadding="false"
